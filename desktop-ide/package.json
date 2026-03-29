@@ -1,0 +1,26 @@
+{
+  "name": "muhendis-c-desktop-ide",
+  "version": "1.0.0",
+  "description": "SSN — Türkçe Sözdizimli Programlama Dili Desktop IDE",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . SSN --platform=win32 --arch=x64 --icon=build/icon.ico --out=dist --overwrite"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.45.0"
+  },
+  "build": {
+    "appId": "com.ssn.ide",
+    "productName": "SSN",
+    "win": {
+      "target": "dir",
+      "icon": "build/icon.png"
+    }
+  }
+}

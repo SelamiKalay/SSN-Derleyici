@@ -1,0 +1,29 @@
+node_modules/
+dist/
+build/
+*.exe
+*.dll
+*.log
+*.tc
+
+# OS Temporary Files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE Configs
+.vscode/
+.idea/
+
+# Desktop-app build artifacts
+desktop-app/dist/
+desktop-app/build/
+desktop-ide/dist/
+desktop-ide/build/
+
+# IDE Temp Files
+temp_code.tc
+temp_*.tc
+
+# Debug outputs
+debug_out.txt
+debug_err.txt

@@ -1,0 +1,12 @@
+{
+  "name": "muhendisC-web-ide",
+  "version": "1.0.0",
+  "description": "MühendisC - Türkçe Sözdizimli Programlama Dili Web IDE Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

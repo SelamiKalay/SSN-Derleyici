@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+    <title>SSN IDE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ══════════════ TOOLBAR ══════════════ -->
+        <header class="toolbar" id="toolbar">
+            <div class="toolbar-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 100 100" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15,80 L25,80 L25,45 L40,45 L40,65 C40,75 35,85 20,85 Z" />
+                            <path d="M30,50 L45,50 L45,30 C45,20 35,15 25,15 L25,25 L40,25 Z" />
+                            <path d="M45,80 L55,80 L55,45 L70,45 L70,65 C70,75 60,85 50,85 Z" />
+                            <path d="M60,50 L75,50 L75,30 C75,20 65,15 55,15 L55,25 L70,25 Z" />
+                            <path d="M75,80 L85,80 L85,20 L95,60 L95,80 L85,40 Z" />
+                        </svg>
+                    </div>
+                    <span class="logo-text">SSN</span>
+                    <span class="logo-badge">IDE</span>
+                </div>
+                <div class="toolbar-separator"></div>
+                <div class="toolbar-actions">
+                    <button class="toolbar-btn" id="btnOpen" title="Dosya Aç (Ctrl+O)">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M1.5 1A1.5 1.5 0 000 2.5v11A1.5 1.5 0 001.5 15h13a1.5 1.5 0 001.5-1.5V5a1.5 1.5 0 00-1.5-1.5H7.707l-1.854-1.854A.5.5 0 005.5 1.5H1.5z"/>
+                        </svg>
+                        <span>Aç</span>
+                    </button>
+                    <button class="toolbar-btn" id="btnSave" title="Kaydet (Ctrl+S)">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M2 1a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4.414A1 1 0 0014.707 4L12 1.293A1 1 0 0011.293 1H2zm0 1h1v3a.5.5 0 00.5.5h7a.5.5 0 00.5-.5V2h.293L14 4.414V14H2V2zm3 0v2.5h5V2H5z"/>
+                        </svg>
+                        <span>Kaydet</span>
+                    </button>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <button class="toolbar-btn btn-commands" id="btnCommands" title="SSN Komutları">
+                    <span>📖</span> Komutlar
+                </button>
+                <div class="toolbar-separator"></div>
+                <button class="btn-compile" id="btnCompile" title="Derle & Çalıştır (Ctrl+Enter)">
+                    <span class="play-icon"></span>
+                    <span class="btn-text">Derle & Çalıştır</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ══════════════ ÖRNEKLER ══════════════ -->
+        <div class="examples-bar">
+            <span class="examples-label">Örnekler:</span>
+            <button class="btn-example" data-example="aritmetik">Aritmetik</button>
+            <button class="btn-example" data-example="kontrol">Kontrol Akışı</button>
+            <button class="btn-example" data-example="string">String</button>
+            <button class="btn-example" data-example="fibonacci">Fibonacci</button>
+            <button class="btn-example" data-example="toplam">Toplam</button>
+        </div>
+
+        <!-- ══════════════ MAIN CONTENT ══════════════ -->
+        <div class="main-content">
+            <!-- EDITOR PANEL -->
+            <div class="editor-panel" id="editorPanel">
+                <div class="panel-header tab-header">
+                    <div class="tab-bar" id="tabBar">
+                        <!-- Tabs will be rendered dynamically by app.js -->
+                    </div>
+                    <div class="tab-bar-actions">
+                        <button class="btn-new-tab" id="btnNewTab" title="Yeni Sekme (Ctrl+N)">+</button>
+                        <span class="panel-info" id="cursorInfo">Satır 1, Sütun 1</span>
+                    </div>
+                </div>
+                <div id="monacoContainer" class="monaco-container"></div>
+            </div>
+
+            <!-- RESIZE HANDLE -->
+            <div class="resize-handle" id="resizeHandle"></div>
+
+            <!-- OUTPUT PANEL -->
+            <div class="output-panel" id="outputPanel">
+                <div class="panel-header output-header">
+                    <div class="panel-tab">
+                        <span class="tab-dot green" id="outputDot"></span>
+                        <span>Çıktı</span>
+                    </div>
+                    <div class="output-actions">
+                        <span class="exec-time" id="execTime"></span>
+                        <button class="btn-clear" id="btnClear" title="Konsolu Temizle">Temizle</button>
+                    </div>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <div class="welcome-message">
+                        <span class="welcome-logo">⚙</span>
+                        <div class="welcome-text">
+                            <strong>SSN IDE v1.0</strong>
+                            <span>Kodunuzu yazın ve "Derle & Çalıştır" butonuna tıklayın.</span>
+                            <span class="shortcut-hint">Kısayol: <kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ STATUS BAR ══════════════ -->
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-item">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Hazır</span>
+                </div>
+            </div>
+            <div class="status-right">
+                <span class="status-item">SSN Bytecode VM</span>
+                <span class="status-item">UTF-8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════ COMMANDS PANEL (FLOATING) ══════════════ -->
+    <div class="commands-overlay" id="commandsOverlay" style="display:none;">
+        <div class="commands-panel" id="commandsPanel">
+            <div class="commands-header">
+                <span>📖 SSN Komutları</span>
+                <button class="commands-close" id="btnCloseCommands">✕</button>
+            </div>
+            <div class="commands-body">
+                <div class="cmd-section">
+                    <div class="cmd-title">Değişken İşlemleri</div>
+                    <div class="cmd-row"><code>degisken x = 10 ;</code><span>Tanımlama</span></div>
+                    <div class="cmd-row"><code>x = 20 ;</code><span>Atama</span></div>
+                </div>
+                <div class="cmd-section">
+                    <div class="cmd-title">Yazdırma</div>
+                    <div class="cmd-row"><code>yaz x ;</code><span>Değişken yazdır</span></div>
+                    <div class="cmd-row"><code>yaz "metin" ;</code><span>String yazdır</span></div>
+                    <div class="cmd-row"><code>yaz "Sonuc: &amp;x" ;</code><span>İnterpolasyon</span></div>
+                </div>
+                <div class="cmd-section">
+                    <div class="cmd-title">Aritmetik</div>
+                    <div class="cmd-row"><code>+ - * /</code><span>Temel operatörler</span></div>
+                    <div class="cmd-row"><code>!ifade!</code><span>Gruplama (parantez yerine)</span></div>
+                    <div class="cmd-note">Örn: !5+3! * 2 → önce 5+3 hesaplanır</div>
+                </div>
+                <div class="cmd-section">
+                    <div class="cmd-title">Kontrol Akışı</div>
+                    <div class="cmd-row"><code>eger x > 5 ise ( ... )</code><span>Koşul</span></div>
+                    <div class="cmd-row"><code>iken x < 10 ise ( ... )</code><span>Döngü</span></div>
+                </div>
+                <div class="cmd-section">
+                    <div class="cmd-title">Karşılaştırma</div>
+                    <div class="cmd-row"><code>&lt; &gt; == !=</code><span>Küçük, büyük, eşit, eşit değil</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
