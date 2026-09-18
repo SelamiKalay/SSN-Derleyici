@@ -1,4 +1,4 @@
-# SSN / MühendisC
+# SSN Derleyici
 
 Türkçe söz dizimli bir programlama dili ve onun derleyicisi. Kaynak kod önce
 bytecode'a derlenir, ardından yığın (stack) tabanlı bir sanal makinede çalıştırılır.
@@ -59,7 +59,7 @@ yaz "Sonuc: &x" ;
 
 - **desktop-ide/** — Electron + Monaco Editor tabanlı masaüstü IDE (söz dizimi
   renklendirme, otomatik tamamlama, hazır örnekler, `Ctrl+Enter` ile derle & çalıştır)
-- **web-ide/** — Node.js/Express sunuculu tarayıcı tabanlı IDE
+- **web-ide/** — Node.js/Express sunuculu tarayıcı tabanlı IDE (`SSN_IDE.bat` ile başlatılır; derleyicinin tek dosyalık sürümü `web-ide/compiler.cpp`)
 
 ## Derleme ve Çalıştırma
 
@@ -71,8 +71,8 @@ cmake --build build --config Release
 ```
 
 ```bash
-muhendisC program.tc            # programı çalıştırır
-muhendisC --debug program.tc    # token ve bytecode çıktısını da gösterir
+ssn program.tc                  # programı çalıştırır
+ssn --debug program.tc          # token ve bytecode çıktısını da gösterir
 ```
 
 Masaüstü IDE (derlenmiş `compiler.exe` dosyası `desktop-ide/` klasörüne konulmalıdır):

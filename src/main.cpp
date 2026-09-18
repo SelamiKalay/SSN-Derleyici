@@ -1,8 +1,8 @@
 // ============================================================
-// MühendisC — Türkçe Sözdizimli Bytecode Compiler & VM
+// SSN — Türkçe Sözdizimli Bytecode Compiler & VM
 //
-// Kullanim: muhendisC <dosya.tc>
-//           muhendisC --debug <dosya.tc>
+// Kullanim: ssn <dosya.tc>
+//           ssn --debug <dosya.tc>
 //
 // Pipeline: Kaynak Kod → Lexer → Parser → AST → Compiler → Bytecode → VM
 // ============================================================
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     std::string filePath;
 
     if (argc < 2) {
-        std::cerr << "MühendisC — Türkçe Bytecode Compiler & VM" << std::endl;
+        std::cerr << "SSN — Türkçe Bytecode Compiler & VM" << std::endl;
         std::cerr << "Kullanim: " << argv[0] << " [--debug] <dosya.tc>" << std::endl;
         std::cerr << std::endl;
         std::cerr << "Secenekler:" << std::endl;

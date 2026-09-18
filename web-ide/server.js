@@ -1,5 +1,5 @@
 // ============================================================
-// MühendisC Web IDE — Node.js Backend
+// SSN Web IDE — Node.js Backend
 // ============================================================
 
 const express = require('express');
@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 // Sunucuyu başlat
 app.listen(PORT, () => {
     console.log(`\n  ╔══════════════════════════════════════════╗`);
-    console.log(`  ║   MühendisC IDE                          ║`);
+    console.log(`  ║   SSN IDE                                ║`);
     console.log(`  ║   http://localhost:${PORT}                  ║`);
     console.log(`  ╚══════════════════════════════════════════╝\n`);
 

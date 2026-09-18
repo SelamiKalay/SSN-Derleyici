@@ -194,7 +194,7 @@ function registerIPCHandlers() {
             title: 'Farklı Kaydet',
             defaultPath: 'program.tc',
             filters: [
-                { name: 'MühendisC Dosyaları', extensions: ['tc'] },
+                { name: 'SSN Dosyaları', extensions: ['tc'] },
                 { name: 'Tüm Dosyalar', extensions: ['*'] }
             ]
         });

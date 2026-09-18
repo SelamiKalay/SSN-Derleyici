@@ -3,7 +3,7 @@ chcp 65001 >nul
 
 echo.
 echo   ╔══════════════════════════════════════════╗
-echo   ║   MühendisC IDE Başlatılıyor...          ║
+echo   ║   SSN IDE Başlatılıyor...                ║
 echo   ╚══════════════════════════════════════════╝
 echo.
 
@@ -68,7 +68,7 @@ if exist "%CHROME_PATH%" (
 )
 
 echo.
-echo   MühendisC IDE çalışıyor!
+echo   SSN IDE çalışıyor!
 echo   Bu pencereyi kapatmak sunucuyu durdurur.
 echo.
 echo   Kapatmak icin bir tusa basin...

@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title MuhendisC IDE
+title SSN IDE
 
 REM Node.js PATH ayari
 set "NODEPATH=%~dp0..\web-ide\node"

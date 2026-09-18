@@ -1,5 +1,5 @@
 // ============================================================
-// MühendisC — Türkçe Sözdizimli Bytecode Compiler & Stack-Based VM
+// SSN — Türkçe Sözdizimli Bytecode Compiler & Stack-Based VM
 // Tek Dosya Versiyonu (Web IDE İçin)
 //
 // Derleme: cl /EHsc /utf-8 /O2 compiler.cpp /Fe:compiler.exe
