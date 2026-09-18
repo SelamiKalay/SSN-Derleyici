@@ -1,0 +1,7 @@
+// Metinler ve &degisken ile metin içine yerleştirme
+degisken x = 42 ;
+yaz "Sonuc = &x" ;
+degisken isim = "Dunya" ;
+yaz "Merhaba &isim!" ;
+yaz "a" + "b" ;
+yaz "Deger: " + 5 ;

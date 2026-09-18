@@ -1,0 +1,3 @@
+// Satır sonu olarak é de kullanılabilir
+degisken a = 3 é
+yaz a * 2 é

@@ -1,0 +1,11 @@
+// Fibonacci dizisinin ilk 10 terimi
+degisken a = 0 ;
+degisken b = 1 ;
+degisken i = 0 ;
+iken i < 10 ise (
+    yaz a ;
+    degisken temp = b ;
+    b = a + b ;
+    a = temp ;
+    i = i + 1 ;
+)

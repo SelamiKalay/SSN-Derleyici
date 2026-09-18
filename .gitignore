@@ -27,3 +27,6 @@ temp_*.tc
 # Debug outputs
 debug_out.txt
 debug_err.txt
+
+# Test programları sürüm kontrolünde tutulur
+!tests/**/*.tc

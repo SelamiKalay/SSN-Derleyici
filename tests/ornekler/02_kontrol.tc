@@ -1,0 +1,15 @@
+// eger (if) ve iken (while)
+degisken x = 10 ;
+eger x > 5 ise (
+    yaz "Buyuk" ;
+)
+eger x < 5 ise (
+    yaz "Kucuk" ;
+)
+degisken i = 0 ;
+iken i < 3 ise (
+    yaz i ;
+    i = i + 1 ;
+)
+eger x == 10 ise ( yaz "esit" ; )
+eger x != 10 ise ( yaz "farkli" ; )

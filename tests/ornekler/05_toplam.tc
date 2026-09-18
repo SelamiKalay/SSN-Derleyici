@@ -1,0 +1,10 @@
+// 1'den N'e kadar toplam
+degisken n = 100 ;
+degisken toplam = 0 ;
+degisken i = 1 ;
+iken i < n + 1 ise (
+    toplam = toplam + i ;
+    i = i + 1 ;
+)
+yaz "1'den 100'e toplam:" ;
+yaz toplam ;

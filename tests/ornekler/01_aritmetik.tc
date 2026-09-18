@@ -1,0 +1,9 @@
+// Aritmetik ve işlem önceliği — ! ... ! gruplama parantezidir
+degisken x = !5 + 3! * 2 ;
+yaz x ;
+degisken y = 10 + !2 * 3! ;
+yaz y ;
+degisken z = !x + y! * 2 ;
+yaz z ;
+yaz 20 / 4 ;
+yaz 7 - 10 ;

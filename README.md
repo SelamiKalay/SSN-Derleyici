@@ -1,5 +1,7 @@
 # SSN Derleyici
 
+[![CI](https://github.com/SelamiKalay/SSN-Derleyici/actions/workflows/ci.yml/badge.svg)](https://github.com/SelamiKalay/SSN-Derleyici/actions/workflows/ci.yml)
+
 Türkçe söz dizimli bir programlama dili ve onun derleyicisi. Kaynak kod önce
 bytecode'a derlenir, ardından yığın (stack) tabanlı bir sanal makinede çalıştırılır.
 Derleyici hiçbir dış kütüphane kullanmadan, sıfırdan C++17 ile yazılmıştır.
@@ -39,6 +41,7 @@ yaz "Sonuc: &x" ;
 | Gruplama (parantez yerine) | `!5 + 3! * 2` |
 | String interpolasyonu | `"Merhaba &isim"` |
 | Satır sonu | `;` veya `é` |
+| Yorum | `// satır sonuna kadar` |
 
 - Aritmetik: `+ - * /` (operatör önceliğiyle)
 - Karşılaştırma: `< > == !=`
@@ -81,6 +84,17 @@ Masaüstü IDE (derlenmiş `compiler.exe` dosyası `desktop-ide/` klasörüne ko
 cd desktop-ide
 npm install
 npm start
+```
+
+## Testler
+
+`tests/ornekler/` altındaki her `.tc` programının çıktısı yanındaki `.out` dosyasıyla
+karşılaştırılır; `tests/hatali/` altındaki programların ise hata vermesi beklenir.
+Testler her push'ta GitHub Actions üzerinde hem ana derleyici hem de web IDE
+derleyicisi için çalışır.
+
+```bash
+bash tests/run_tests.sh build/ssn
 ```
 
 ## Kullanılan Teknolojiler

@@ -31,6 +31,9 @@ void Lexer::skipWhitespace() {
         char c = current();
         if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
             advance();
+        } else if (c == '/' && pos_ + 1 < source_.size() && source_[pos_ + 1] == '/') {
+            // Satir yorumu: // ... satir sonuna kadar yok sayilir
+            while (!isAtEnd() && current() != '\n') advance();
         } else {
             break;
         }
