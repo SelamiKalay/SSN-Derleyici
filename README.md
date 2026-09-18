@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/SelamiKalay/SSN-Derleyici/actions/workflows/ci.yml/badge.svg)](https://github.com/SelamiKalay/SSN-Derleyici/actions/workflows/ci.yml)
 
+> **English:** SSN is a programming language with Turkish syntax and its compiler, written from scratch in C++17 with no external libraries: lexer → recursive-descent parser → AST → bytecode compiler → stack-based virtual machine. Ships with an Electron/Monaco desktop IDE and a web IDE, and a test suite that runs on GitHub Actions.
+
 Türkçe söz dizimli bir programlama dili ve onun derleyicisi. Kaynak kod önce
 bytecode'a derlenir, ardından yığın (stack) tabanlı bir sanal makinede çalıştırılır.
 Derleyici hiçbir dış kütüphane kullanmadan, sıfırdan C++17 ile yazılmıştır.
