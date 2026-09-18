@@ -8,10 +8,18 @@ BIN="${1:?Kullanım: bash tests/run_tests.sh <derleyici-yolu>}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 gecti=0; kaldi=0
 
+# Derleyiciyi çalıştırır; Windows satır sonlarını (CRLF) LF'e çevirir.
+# Çıktıyı $cikti, çıkış kodunu $kod değişkenine yazar.
+calistir() {
+    local ham
+    ham="$("$BIN" "$1" 2>&1)"; kod=$?
+    cikti="$(printf '%s' "$ham" | tr -d '\r')"
+}
+
 for tc in "$DIR"/ornekler/*.tc; do
     ad="$(basename "$tc")"
-    beklenen="$(cat "${tc%.tc}.out")"
-    cikti="$("$BIN" "$tc" 2>&1)"; kod=$?
+    beklenen="$(tr -d '\r' < "${tc%.tc}.out")"
+    calistir "$tc"
     if [ "$kod" -eq 0 ] && [ "$cikti" = "$beklenen" ]; then
         echo "  GEÇTİ    $ad"; gecti=$((gecti + 1))
     else
@@ -23,7 +31,7 @@ done
 
 for tc in "$DIR"/hatali/*.tc; do
     ad="$(basename "$tc")"
-    cikti="$("$BIN" "$tc" 2>&1)"; kod=$?
+    calistir "$tc"
     if [ "$kod" -ne 0 ] && printf '%s' "$cikti" | grep -q "HATA"; then
         echo "  GEÇTİ    hatali/$ad"; gecti=$((gecti + 1))
     else

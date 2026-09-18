@@ -30,3 +30,4 @@ debug_err.txt
 
 # Test programları sürüm kontrolünde tutulur
 !tests/**/*.tc
+build-win/
