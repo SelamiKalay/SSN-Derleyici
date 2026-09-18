@@ -77,7 +77,7 @@ app.get('/', (req, res) => {
 });
 
 // Sunucuyu başlat
-app.listen(PORT, () => {
+app.listen(PORT, '127.0.0.1', () => {
     console.log(`\n  ╔══════════════════════════════════════════╗`);
     console.log(`  ║   SSN IDE                                ║`);
     console.log(`  ║   http://localhost:${PORT}                  ║`);
