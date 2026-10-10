@@ -92,4 +92,5 @@ private:
     Token makeIdentifierOrKeyword();
     Token makeString();
     bool matchUTF8_e_acute();  // é karakterini tanir
+    std::string unknownCharMessage() const;  // anlasilir 'bilinmeyen karakter' hatasi
 };

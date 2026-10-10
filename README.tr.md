@@ -60,7 +60,8 @@ Söz diziminin bazı noktaları ilk bakışta alışılmadık görünebilir; ned
 - **Anahtar kelimeler Türkçe ama ASCII yazılır** (`degisken`, `eger`). Lexer kaynak
   kodu bayt bayt okur ve tanımlayıcılarda yalnızca `a-z`, `A-Z`, `_` ve rakamları
   kabul eder. `ğ`, `ş`, `ı` gibi harfler UTF-8'de birden çok bayt tuttuğu için
-  desteklenmez; `değişken` yazmak "Bilinmeyen karakter" hatası verir.
+  desteklenmez; `değişken` yazılırsa derleyici hangi karakterin sorun olduğunu
+  gösteren açıklayıcı bir hata verir ve `degisken` yazılmasını önerir.
 - **Parantezler bloklar içindir, gruplama `!…!` ile yapılır.** `eger`/`iken`
   gövdeleri `( … )` içine yazıldığından aynı karakterin ifadelerde gruplama için
   de kullanılması ayrıştırmayı belirsizleştirirdi. Bu yüzden `!5 + 3! * 2`

@@ -57,6 +57,41 @@ bool Lexer::isAlphaNumeric(char c) const {
 }
 
 // ============================================================
+// Bilinmeyen karakter icin anlasilir hata mesaji
+// ============================================================
+// ASCII disi harfler (or. 'g' yerine 'ğ') UTF-8'de birden cok bayt tutar;
+// tum diziyi okuyup karakteri ve Unicode kodunu (U+XXXX) gosterir.
+std::string Lexer::unknownCharMessage() const {
+    std::ostringstream msg;
+    msg << "Satir " << line_ << ": ";
+    unsigned char lead = static_cast<unsigned char>(source_[pos_]);
+
+    if (lead < 0x80) {
+        msg << "Bilinmeyen karakter '" << static_cast<char>(lead) << "' (0x"
+            << std::hex << std::uppercase << static_cast<int>(lead) << ")";
+        return msg.str();
+    }
+
+    size_t len = (lead >= 0xF0) ? 4 : (lead >= 0xE0) ? 3 : (lead >= 0xC0) ? 2 : 1;
+    unsigned int cp = (len == 1) ? lead
+                    : lead & (0xFF >> (len + 1));
+    for (size_t i = 1; i < len && pos_ + i < source_.size(); i++) {
+        cp = (cp << 6) | (static_cast<unsigned char>(source_[pos_ + i]) & 0x3F);
+    }
+
+    std::ostringstream code;
+    code << std::hex << std::uppercase;
+    code.width(4); code.fill('0');
+    code << cp;
+
+    msg << "'" << source_.substr(pos_, len) << "' (U+" << code.str()
+        << ") karakteri kullanilamaz. Anahtar kelime ve degisken adlarinda "
+           "yalnizca ASCII harfler (a-z, A-Z), rakamlar ve '_' kullanilabilir; "
+           "or. 'değişken' yerine 'degisken' yazin.";
+    return msg.str();
+}
+
+// ============================================================
 // é (e-acute) UTF-8 eslesmesi: 0xC3 0xA9
 // ============================================================
 bool Lexer::matchUTF8_e_acute() {
@@ -298,9 +333,7 @@ std::vector<Token> Lexer::tokenize() {
         }
 
         // --- Bilinmeyen karakter ---
-        throw std::runtime_error("Satir " + std::to_string(line_) +
-            ": Bilinmeyen karakter '" + std::string(1, c) + "' (0x" +
-            std::to_string(static_cast<int>(static_cast<unsigned char>(c))) + ")");
+        throw std::runtime_error(unknownCharMessage());
     }
 
     tokens.push_back(Token(TokenType::TOKEN_EOF, "", line_));

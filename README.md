@@ -61,7 +61,8 @@ Some parts of the syntax may look unusual at first; here is why:
 - **Keywords are Turkish but written in ASCII** (`degisken`, `eger`). The lexer reads
   the source byte by byte and accepts only `a-z`, `A-Z`, `_` and digits in
   identifiers. Letters such as `ğ`, `ş`, `ı` take more than one byte in UTF-8 and
-  are not supported; writing `değişken` gives an "unknown character" error.
+  are not supported; if you write `değişken`, the compiler reports which character
+  is the problem and suggests writing `degisken`.
 - **Parentheses are for blocks; grouping uses `!…!`.** Since `eger`/`iken` bodies are
   written inside `( … )`, using the same character for grouping in expressions would
   make parsing ambiguous, so `!5 + 3! * 2` is written instead. The `!=` operator is

@@ -1,0 +1,3 @@
+// Degisken adinda Turkce harf: anlasilir hata vermeli
+değişken sayı = 5 ;
+yaz sayı ;
