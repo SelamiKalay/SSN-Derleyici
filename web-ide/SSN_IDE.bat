@@ -23,11 +23,17 @@ if exist "%NODE_DIR%\node.exe" (
     )
 )
 
-REM Compiler kontrolü
-if not exist "compiler.exe" (
-    echo   UYARI: compiler.exe bulunamadi!
-    echo   Derlemek icin Visual Studio Developer Command Prompt'ta:
-    echo     cl /EHsc /utf-8 /O2 compiler.cpp /Fe:compiler.exe
+REM Derleyici kontrolü (src/ altindan CMake ile derlenen ssn.exe)
+set "SSN_BULUNDU="
+if defined SSN_COMPILER if exist "%SSN_COMPILER%" set "SSN_BULUNDU=1"
+if exist "..\build\Release\ssn.exe" set "SSN_BULUNDU=1"
+if exist "..\build\ssn.exe" set "SSN_BULUNDU=1"
+if exist "compiler.exe" set "SSN_BULUNDU=1"
+if not defined SSN_BULUNDU (
+    echo   UYARI: derleyici ^(ssn.exe^) bulunamadi!
+    echo   Proje kokunde derlemek icin:
+    echo     cmake -B build -DCMAKE_BUILD_TYPE=Release
+    echo     cmake --build build --config Release
     echo.
 )
 

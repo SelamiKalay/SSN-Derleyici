@@ -3,7 +3,7 @@
 // ============================================================
 
 const express = require('express');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -14,8 +14,20 @@ const PORT = 3000;
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Compiler yolu (aynı klasörde derlenmiş olmalı)
-const COMPILER_PATH = path.join(__dirname, 'compiler.exe');
+// Derleyici: src/ altindan CMake ile derlenen `ssn`. Aranan yerler, sirayla:
+//   1. SSN_COMPILER ortam degiskeni
+//   2. ../build/Release/ssn.exe, ../build/ssn.exe, ../build/ssn  (cmake -B build)
+//   3. bu klasordeki compiler.exe (eski kurulumlarla uyumluluk)
+function findCompiler() {
+    const candidates = [
+        process.env.SSN_COMPILER,
+        path.join(__dirname, '..', 'build', 'Release', 'ssn.exe'),
+        path.join(__dirname, '..', 'build', 'ssn.exe'),
+        path.join(__dirname, '..', 'build', 'ssn'),
+        path.join(__dirname, 'compiler.exe'),
+    ];
+    return candidates.find(p => p && fs.existsSync(p)) || null;
+}
 const TEMP_FILE = path.join(__dirname, 'temp_code.tc');
 
 // ============================================================
@@ -43,8 +55,13 @@ app.post('/run', (req, res) => {
     }
 
     // Compiler'ı çalıştır - 5 saniye zaman aşımı
-    // ÖNEMLİ: COMPILER_PATH boşluk içeriyorsa tırnak içine alınmalı
-    exec(`"${COMPILER_PATH}" "${tempFileWithId}"`, { timeout: 5000 }, (error, stdout, stderr) => {
+    const compilerPath = findCompiler();
+    if (!compilerPath) {
+        try { fs.unlinkSync(tempFileWithId); } catch (_) {}
+        return res.json({ success: false, output: '',
+            error: 'HATA: Derleyici (ssn) bulunamadı. Proje kökünde derleyin: cmake -B build && cmake --build build' });
+    }
+    execFile(compilerPath, [tempFileWithId], { timeout: 5000 }, (error, stdout, stderr) => {
         // Geçici dosyayı temizle
         try {
             if (fs.existsSync(tempFileWithId)) fs.unlinkSync(tempFileWithId);
@@ -84,13 +101,14 @@ app.listen(PORT, '127.0.0.1', () => {
     console.log(`  ╚══════════════════════════════════════════╝\n`);
 
     // Compiler varlık kontrolü
-    if (!fs.existsSync(COMPILER_PATH)) {
-        console.warn('  ⚠ UYARI: compiler.exe bulunamadı!');
-        console.warn('  Derlemek için:');
-        console.warn('    cl /EHsc /utf-8 /O2 compiler.cpp /Fe:compiler.exe');
+    const compilerPath = findCompiler();
+    if (!compilerPath) {
+        console.warn('  ⚠ UYARI: derleyici (ssn) bulunamadı!');
+        console.warn('  Proje kökünde derlemek için:');
+        console.warn('    cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release');
         console.warn('');
     } else {
-        console.log('  ✓ Compiler hazır: compiler.exe');
+        console.log(`  ✓ Derleyici hazır: ${compilerPath}`);
     }
 });
 

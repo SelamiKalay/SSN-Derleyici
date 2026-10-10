@@ -7,4 +7,8 @@ Eğer masaüstünde kısayol istiyorsanız:
 1. "SSN_IDE.bat" dosyasına sağ tıklayın.
 2. "Gönder" -> "Masaüstü (kısayol oluştur)" seçeneğini tıklayın.
 
-Not: Node.js (https://nodejs.org) kurulu olmalıdır. compiler.exe bu klasörde olmalıdır.
+Not: Node.js (https://nodejs.org) kurulu olmalıdır. Derleyici proje kökünde
+CMake ile derlenmiş olmalıdır (build\Release\ssn.exe):
+  cmake -B build -DCMAKE_BUILD_TYPE=Release
+  cmake --build build --config Release
+Farklı bir yer için SSN_COMPILER ortam değişkenini kullanın.

@@ -7,8 +7,20 @@ const { execFile } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// Compiler yolu: Kendi içindeki compiler.exe
-const COMPILER_PATH = path.join(__dirname, 'compiler.exe');
+// Derleyici: src/ altindan CMake ile derlenen `ssn`. Aranan yerler, sirayla:
+//   1. SSN_COMPILER ortam degiskeni
+//   2. ../build/Release/ssn.exe, ../build/ssn.exe, ../build/ssn  (cmake -B build)
+//   3. bu klasordeki compiler.exe (eski kurulumlarla uyumluluk)
+function findCompiler() {
+    const candidates = [
+        process.env.SSN_COMPILER,
+        path.join(__dirname, '..', 'build', 'Release', 'ssn.exe'),
+        path.join(__dirname, '..', 'build', 'ssn.exe'),
+        path.join(__dirname, '..', 'build', 'ssn'),
+        path.join(__dirname, 'compiler.exe'),
+    ];
+    return candidates.find(p => p && fs.existsSync(p)) || null;
+}
 
 let mainWindow;
 
@@ -114,10 +126,11 @@ function registerIPCHandlers() {
                 return;
             }
 
-            if (!fs.existsSync(COMPILER_PATH)) {
+            const compilerPath = findCompiler();
+            if (!compilerPath) {
                 resolve({
                     success: false, stdout: '',
-                    stderr: `HATA: Derleyici bulunamadı!\nAranan yol: ${COMPILER_PATH}\n\nÇözüm: compiler.exe dosyasını web-ide klasörüne yerleştirin.`,
+                    stderr: 'HATA: Derleyici (ssn) bulunamadı!\n\nÇözüm: proje kökünde derleyin:\n  cmake -B build -DCMAKE_BUILD_TYPE=Release\n  cmake --build build --config Release\nveya SSN_COMPILER ortam değişkeniyle derleyicinin yolunu verin.',
                     duration: 0
                 });
                 return;
@@ -125,7 +138,7 @@ function registerIPCHandlers() {
 
             const startTime = Date.now();
 
-            execFile(COMPILER_PATH, [tempFile], { timeout: 10000 }, (error, stdout, stderr) => {
+            execFile(compilerPath, [tempFile], { timeout: 10000 }, (error, stdout, stderr) => {
                 const duration = Date.now() - startTime;
                 try { if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile); } catch (e) { }
 

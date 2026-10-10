@@ -68,7 +68,12 @@ yaz "Sonuc: &x" ;
 
 - **desktop-ide/** — Electron + Monaco Editor tabanlı masaüstü IDE (söz dizimi
   renklendirme, otomatik tamamlama, hazır örnekler, `Ctrl+Enter` ile derle & çalıştır)
-- **web-ide/** — Node.js/Express sunuculu tarayıcı tabanlı IDE (`SSN_IDE.bat` ile başlatılır; derleyicinin tek dosyalık sürümü `web-ide/compiler.cpp`)
+- **web-ide/** — Node.js/Express sunuculu tarayıcı tabanlı IDE (`SSN_IDE.bat` ile başlatılır)
+
+İki IDE de `src/` altından derlenen aynı derleyiciyi (`ssn`) kullanır. Derleyiciyi
+şu sırayla ararlar: `SSN_COMPILER` ortam değişkeni, ardından proje kökündeki
+`build/Release/ssn.exe`, `build/ssn.exe` ve `build/ssn`, en son da IDE klasöründeki
+eski `compiler.exe`.
 
 ## Derleme ve Çalıştırma
 
@@ -84,7 +89,7 @@ ssn program.tc                  # programı çalıştırır
 ssn --debug program.tc          # token ve bytecode çıktısını da gösterir
 ```
 
-Masaüstü IDE (derlenmiş `compiler.exe` dosyası `desktop-ide/` klasörüne konulmalıdır):
+Masaüstü IDE (önce derleyiciyi yukarıdaki gibi derleyin):
 
 ```bash
 cd desktop-ide
@@ -96,8 +101,7 @@ npm start
 
 `tests/ornekler/` altındaki her `.tc` programının çıktısı yanındaki `.out` dosyasıyla
 karşılaştırılır; `tests/hatali/` altındaki programların ise hata vermesi beklenir.
-Testler her push'ta GitHub Actions üzerinde hem ana derleyici hem de web IDE
-derleyicisi için çalışır.
+Testler her push'ta GitHub Actions üzerinde çalışır.
 
 ```bash
 bash tests/run_tests.sh build/ssn

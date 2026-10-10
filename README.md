@@ -70,7 +70,12 @@ yaz "Sonuc: &x" ;
 - **desktop-ide/** — desktop IDE built with Electron + Monaco Editor (syntax
   highlighting, autocompletion, built-in examples, compile & run with `Ctrl+Enter`)
 - **web-ide/** — browser-based IDE with a Node.js/Express backend (started with
-  `SSN_IDE.bat`; a single-file version of the compiler lives in `web-ide/compiler.cpp`)
+  `SSN_IDE.bat`)
+
+Both IDEs use the same compiler built from `src/` (`ssn`). They look for it in
+this order: the `SSN_COMPILER` environment variable, then `build/Release/ssn.exe`,
+`build/ssn.exe` and `build/ssn` in the project root, and finally a legacy
+`compiler.exe` next to the IDE.
 
 ## Building and Running
 
@@ -86,7 +91,7 @@ ssn program.tc                  # runs the program
 ssn --debug program.tc          # also prints tokens and bytecode
 ```
 
-Desktop IDE (the compiled `compiler.exe` must be placed in `desktop-ide/`):
+Desktop IDE (build the compiler first as shown above):
 
 ```bash
 cd desktop-ide
@@ -98,8 +103,7 @@ npm start
 
 The output of every `.tc` program under `tests/ornekler/` is compared with the
 `.out` file next to it; programs under `tests/hatali/` are expected to fail with an
-error. On every push, GitHub Actions runs the tests against both the main compiler
-and the web IDE compiler.
+error. The tests run on GitHub Actions on every push.
 
 ```bash
 bash tests/run_tests.sh build/ssn
