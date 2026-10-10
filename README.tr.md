@@ -6,7 +6,7 @@
 
 ![SSN masaüstü IDE](docs/ide.png)
 
-Türkçe söz dizimli bir programlama dili ve onun derleyicisi. Kaynak kod önce
+Türkçe anahtar kelimeli bir programlama dili ve onun derleyicisi. Kaynak kod önce
 bytecode'a derlenir, ardından yığın (stack) tabanlı bir sanal makinede çalıştırılır.
 Derleyici hiçbir dış kütüphane kullanmadan, sıfırdan C++17 ile yazılmıştır.
 
@@ -52,6 +52,27 @@ yaz "Sonuc: &x" ;
 - Aritmetik: `+ - * /` (operatör önceliğiyle)
 - Karşılaştırma: `< > == !=`
 - Veri tipleri: sayı (ondalıklı) ve metin
+
+### Tasarım notları
+
+Söz diziminin bazı noktaları ilk bakışta alışılmadık görünebilir; nedenleri şunlar:
+
+- **Anahtar kelimeler Türkçe ama ASCII yazılır** (`degisken`, `eger`). Lexer kaynak
+  kodu bayt bayt okur ve tanımlayıcılarda yalnızca `a-z`, `A-Z`, `_` ve rakamları
+  kabul eder. `ğ`, `ş`, `ı` gibi harfler UTF-8'de birden çok bayt tuttuğu için
+  desteklenmez; `değişken` yazmak "Bilinmeyen karakter" hatası verir.
+- **Parantezler bloklar içindir, gruplama `!…!` ile yapılır.** `eger`/`iken`
+  gövdeleri `( … )` içine yazıldığından aynı karakterin ifadelerde gruplama için
+  de kullanılması ayrıştırmayı belirsizleştirirdi. Bu yüzden `!5 + 3! * 2`
+  yazılır. `!=` operatörü bir sonraki karaktere bakılarak gruplamadan ayrılır.
+- **Her yapı bir anahtar kelimeyle başlar, koşul `ise` ile biter.** `iken i < 10 ise ( … )`
+  biçimi Türkçe cümle sırasına ("i 10'dan küçük iken") tam uymaz, ama parser'ın
+  her ifadenin türünü ilk token'a bakarak belirlemesini sağlar (recursive
+  descent). `eger` ve `iken` aynı kalıbı kullanır.
+- **Satır sonu `;` veya `é`.** İkisi tamamen eşdeğerdir. `é`, lexer'ın özel olarak
+  tanıdığı tek çok baytlı (UTF-8: `0xC3 0xA9`) karakterdir; ASCII olmayan bir
+  karakterin bayt düzeyinde nasıl eşleştirildiğini gösteren bir örnek olarak dilde
+  bırakılmıştır.
 
 ## Derleyici Aşamaları
 

@@ -6,7 +6,7 @@
 
 ![SSN desktop IDE](docs/ide.png)
 
-SSN is a programming language with Turkish syntax, together with its compiler.
+SSN is a programming language with Turkish keywords, together with its compiler.
 Source code is first compiled to bytecode and then executed on a stack-based
 virtual machine. The compiler is written from scratch in C++17 with no external
 libraries.
@@ -53,6 +53,28 @@ yaz "Sonuc: &x" ;
 - Arithmetic: `+ - * /` (with operator precedence)
 - Comparison: `< > == !=`
 - Data types: number (floating point) and string
+
+### Design notes
+
+Some parts of the syntax may look unusual at first; here is why:
+
+- **Keywords are Turkish but written in ASCII** (`degisken`, `eger`). The lexer reads
+  the source byte by byte and accepts only `a-z`, `A-Z`, `_` and digits in
+  identifiers. Letters such as `ğ`, `ş`, `ı` take more than one byte in UTF-8 and
+  are not supported; writing `değişken` gives an "unknown character" error.
+- **Parentheses are for blocks; grouping uses `!…!`.** Since `eger`/`iken` bodies are
+  written inside `( … )`, using the same character for grouping in expressions would
+  make parsing ambiguous, so `!5 + 3! * 2` is written instead. The `!=` operator is
+  told apart from grouping by looking at the next character.
+- **Every statement starts with a keyword, and conditions end with `ise`.** The form
+  `iken i < 10 ise ( … )` does not follow Turkish word order exactly ("while i is
+  less than 10" would put `iken` at the end), but it lets the recursive descent
+  parser decide what a statement is from its first token. `eger` and `iken` share
+  the same pattern.
+- **Statements end with `;` or `é`.** The two are fully equivalent. `é` is the only
+  multi-byte (UTF-8: `0xC3 0xA9`) character the lexer recognizes specially; it is
+  kept in the language as an example of matching a non-ASCII character at the
+  byte level.
 
 ## Compiler Stages
 
