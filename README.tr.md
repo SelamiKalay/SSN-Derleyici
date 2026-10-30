@@ -52,6 +52,13 @@ yaz "Sonuc: &x" ;
 - Aritmetik: `+ - * /` (operatör önceliğiyle)
 - Karşılaştırma: `< > == !=`
 - Veri tipleri: sayı (ondalıklı) ve metin
+- Metinler yalnızca `+` (birleştirme), `==` ve `!=` ile kullanılabilir; `"a" * 2` veya
+  `"a" < 1` çalışma zamanı hatasıdır. Sayı ile metin hiçbir zaman eşit değildir (`0 == "a"` yanlış)
+- Değişkene atama yapmadan önce `degisken` ile tanımlanmalıdır; tanımsız `x` için
+  `x = 1 ;` hata verir, böylece yazım hatası sessizce yeni değişken oluşturmaz
+- Ardından değişken adı gelmeyen `&` metinde kalır (`"Tom & Jerry"`)
+- Sınırlar: en fazla 200 iç içe blok veya `!…!` ve tek ifadede 1000 işlem; aşılırsa
+  derleyici çökmek yerine hata verir
 
 ### Tasarım notları
 
@@ -123,10 +130,23 @@ npm start
 
 `tests/ornekler/` altındaki her `.tc` programının çıktısı yanındaki `.out` dosyasıyla
 karşılaştırılır; `tests/hatali/` altındaki programların ise hata vermesi beklenir.
-Testler her push'ta GitHub Actions üzerinde çalışır.
+Yanında `.hata` dosyası olan hatalı programlarda hata mesajı o metni de içermelidir.
+Testler her push'ta GitHub Actions üzerinde, ayrıca AddressSanitizer ve
+UndefinedBehaviorSanitizer ile bir kez daha çalışır.
 
 ```bash
 bash tests/run_tests.sh build/ssn
+```
+
+## Sürüm Yayınlama
+
+`v` ile başlayan bir etiket push'landığında derleyici Linux, macOS ve Windows'ta
+derlenir, her birinde testler çalışır ve arşivler (`SHA256SUMS.txt` ile birlikte)
+GitHub Release olarak yayınlanır:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## Kullanılan Teknolojiler

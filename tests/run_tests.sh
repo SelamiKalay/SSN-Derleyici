@@ -2,7 +2,8 @@
 # SSN test çalıştırıcısı
 # Kullanım: bash tests/run_tests.sh <derleyici-yolu>
 #   tests/ornekler/*.tc  -> çıktı, yanındaki .out dosyasıyla birebir aynı olmalı
-#   tests/hatali/*.tc    -> derleyici hata vermeli (çıkış kodu != 0, "HATA" mesajı)
+#   tests/hatali/*.tc    -> derleyici hata vermeli (çıkış kodu != 0, "HATA" mesajı);
+#                           yanında .hata dosyası varsa mesaj o metni de içermeli
 set -u
 BIN="${1:?Kullanım: bash tests/run_tests.sh <derleyici-yolu>}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -32,10 +33,15 @@ done
 for tc in "$DIR"/hatali/*.tc; do
     ad="$(basename "$tc")"
     calistir "$tc"
-    if [ "$kod" -ne 0 ] && printf '%s' "$cikti" | grep -q "HATA"; then
+    beklenen=""
+    [ -f "${tc%.tc}.hata" ] && beklenen="$(tr -d '\r\n' < "${tc%.tc}.hata")"
+    if [ "$kod" -ne 0 ] && printf '%s' "$cikti" | grep -q "HATA" &&
+       printf '%s' "$cikti" | grep -qF -- "$beklenen"; then
         echo "  GEÇTİ    hatali/$ad"; gecti=$((gecti + 1))
     else
         echo "  KALDI    hatali/$ad (hata bekleniyordu, çıkış kodu: $kod)"
+        [ -n "$beklenen" ] && echo "           beklenen mesaj: $beklenen"
+        echo "           gelen: $(printf '%s' "$cikti" | head -3)"
         kaldi=$((kaldi + 1))
     fi
 done

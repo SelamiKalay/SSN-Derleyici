@@ -47,6 +47,27 @@ Token Parser::expect(TokenType type, const std::string& message) {
 }
 
 // ============================================================
+// Derinlik Sinirlari
+// ============================================================
+void Parser::enterNesting(int line) {
+    if (++nesting_ > MAX_NESTING) {
+        throw std::runtime_error("Satir " + std::to_string(line) +
+            ": Ic ice gecme cok derin (en fazla " + std::to_string(MAX_NESTING) +
+            " seviye blok veya !...! kullanilabilir)");
+    }
+}
+
+ASTNodePtr Parser::makeBinary(const std::string& op, ASTNodePtr l, ASTNodePtr r, int line) {
+    auto node = std::make_unique<BinaryOpNode>(op, std::move(l), std::move(r), line);
+    if (node->depth > MAX_DEPTH) {
+        throw std::runtime_error("Satir " + std::to_string(line) +
+            ": Ifade cok uzun (en fazla " + std::to_string(MAX_DEPTH) +
+            " islem); ifadeyi ara degiskenlere bolun");
+    }
+    return node;
+}
+
+// ============================================================
 // Satir Sonu Tüketme
 // ============================================================
 void Parser::expectLineEnd() {
@@ -189,7 +210,9 @@ ASTNodePtr Parser::parseWhileStmt() {
 // Blok Ayristirma: ( statement* )
 // ============================================================
 std::vector<ASTNodePtr> Parser::parseBlock() {
+    int ln = current().line;
     expect(TokenType::TOKEN_LPAREN, "'(' bekleniyor (blok baslangici)");
+    enterNesting(ln);
 
     std::vector<ASTNodePtr> statements;
 
@@ -198,6 +221,7 @@ std::vector<ASTNodePtr> Parser::parseBlock() {
     }
 
     expect(TokenType::TOKEN_RPAREN, "')' bekleniyor (blok sonu)");
+    nesting_--;
 
     return statements;
 }
@@ -221,7 +245,7 @@ ASTNodePtr Parser::parseComparison() {
         std::string op = current().value;
         advance();
         auto right = parseAddSub();
-        return std::make_unique<BinaryOpNode>(op, std::move(left), std::move(right), ln);
+        return makeBinary(op, std::move(left), std::move(right), ln);
     }
 
     return left;
@@ -236,7 +260,7 @@ ASTNodePtr Parser::parseAddSub() {
         std::string op = current().value;
         advance();
         auto right = parseTerm();
-        left = std::make_unique<BinaryOpNode>(op, std::move(left), std::move(right), ln);
+        left = makeBinary(op, std::move(left), std::move(right), ln);
     }
 
     return left;
@@ -251,7 +275,7 @@ ASTNodePtr Parser::parseTerm() {
         std::string op = current().value;
         advance();
         auto right = parseFactor();
-        left = std::make_unique<BinaryOpNode>(op, std::move(left), std::move(right), ln);
+        left = makeBinary(op, std::move(left), std::move(right), ln);
     }
 
     return left;
@@ -298,8 +322,10 @@ ASTNodePtr Parser::parseFactor() {
     // 4. Sonucu dogrudan dondur (ayri GroupingNode yok)
     if (check(TokenType::TOKEN_BANG)) {
         advance(); // Acilis ! tüket
+        enterNesting(ln);
         auto expr = parseExpression(); // Tam ifadeyi ayristir
         expect(TokenType::TOKEN_BANG, "Kapanis '!' bekleniyor (grouping)");
+        nesting_--;
         return expr; // Dogrudan expression node'unu dondur
     }
 

@@ -1,0 +1,29 @@
+// Sinir durumlari
+// int'e sigmayan tam sayilar (eskiden tanimsiz davranis)
+yaz 12345678901 ;
+yaz 2147483648 * 2 ;
+yaz 0 - 2147483649 ;
+yaz 7 / 2 ;
+yaz 0 - 0 ;
+// Sayi ile metin hicbir zaman esit degil
+yaz 0 == "a" ;
+yaz 0 != "a" ;
+yaz 1 == "1" ;
+yaz "abc" == "abc" ;
+// Ardindan degisken adi gelmeyen & metinde kalir; \& ile de yazilabilir
+degisken ad = "Tom" ;
+yaz "&ad & Jerry" ;
+yaz "100 \& 200" ;
+yaz "sonda &" ;
+// Blok icinde tanimlanan degisken blok disinda da gorunur
+eger 1 > 0 ise ( degisken z = 5 ; )
+yaz z ;
+// Hic calismayan dongu ve bos blok
+iken 0 > 1 ise ( yaz "olmamali" ; )
+eger 1 > 0 ise ( )
+// Yeniden tanimlama degeri degistirir
+degisken z = 6 ;
+yaz z ;
+// Sinira yakin (200) ic ice !...! hala gecerli
+yaz !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 + 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! * 3 ;
+yaz "bitti" é

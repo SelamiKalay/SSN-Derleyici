@@ -53,6 +53,13 @@ yaz "Sonuc: &x" ;
 - Arithmetic: `+ - * /` (with operator precedence)
 - Comparison: `< > == !=`
 - Data types: number (floating point) and string
+- Strings work only with `+` (concatenation), `==` and `!=`; `"a" * 2` or `"a" < 1`
+  is a runtime error. A number never equals a string (`0 == "a"` is false)
+- A variable must be declared with `degisken` before it is assigned; `x = 1 ;` on an
+  undeclared `x` is an error, so a typo does not silently create a new variable
+- An `&` not followed by a variable name stays in the string (`"Tom & Jerry"`)
+- Limits: at most 200 nested blocks or `!…!` groups and 1000 operations in one
+  expression; beyond that the compiler reports an error instead of crashing
 
 ### Design notes
 
@@ -126,10 +133,23 @@ npm start
 
 The output of every `.tc` program under `tests/ornekler/` is compared with the
 `.out` file next to it; programs under `tests/hatali/` are expected to fail with an
-error. The tests run on GitHub Actions on every push.
+error. If a `.hata` file sits next to one, the error message must also contain its
+text. The tests run on GitHub Actions on every push, once more under
+AddressSanitizer and UndefinedBehaviorSanitizer.
 
 ```bash
 bash tests/run_tests.sh build/ssn
+```
+
+## Releases
+
+Pushing a tag that starts with `v` builds the compiler on Linux, macOS and Windows,
+runs the tests on each, and publishes the archives (with `SHA256SUMS.txt`) as a
+GitHub Release:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## Tech Stack

@@ -72,11 +72,22 @@ std::string Lexer::unknownCharMessage() const {
         return msg.str();
     }
 
-    size_t len = (lead >= 0xF0) ? 4 : (lead >= 0xE0) ? 3 : (lead >= 0xC0) ? 2 : 1;
-    unsigned int cp = (len == 1) ? lead
-                    : lead & (0xFF >> (len + 1));
-    for (size_t i = 1; i < len && pos_ + i < source_.size(); i++) {
-        cp = (cp << 6) | (static_cast<unsigned char>(source_[pos_ + i]) & 0x3F);
+    size_t len = (lead >= 0xF8) ? 0 : (lead >= 0xF0) ? 4 : (lead >= 0xE0) ? 3 : (lead >= 0xC0) ? 2 : 0;
+    // Gecerli bir UTF-8 dizisi degilse (ör. dosya Windows-1254 ile kaydedilmis:
+    // 'ş' tek bayt 0xFE olur) karakter cozulemez; bunu acikca soyle.
+    bool gecerli = len != 0 && pos_ + len <= source_.size();
+    unsigned int cp = gecerli ? (lead & (0xFF >> (len + 1))) : 0;
+    for (size_t i = 1; gecerli && i < len; i++) {
+        unsigned char c = static_cast<unsigned char>(source_[pos_ + i]);
+        if ((c & 0xC0) != 0x80) { gecerli = false; break; }
+        cp = (cp << 6) | (c & 0x3F);
+    }
+    if (!gecerli) {
+        msg << "Gecersiz UTF-8 bayti 0x" << std::hex << std::uppercase
+            << static_cast<int>(lead)
+            << ". Dosya UTF-8 olarak kaydedilmemis olabilir (ör. Windows-1254); "
+               "dosyayi UTF-8 ile kaydedin.";
+        return msg.str();
     }
 
     std::ostringstream code;
@@ -183,6 +194,8 @@ Token Lexer::makeString() {
 
             if (!varName.empty()) {
                 parts.push_back({true, varName});
+            } else {
+                currentLiteral += '&';  // "Tom & Jerry": ardindan ad gelmeyen & metindir
             }
         } else if (current() == '\\') {
             // Escape sequence

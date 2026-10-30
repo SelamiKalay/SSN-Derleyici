@@ -27,6 +27,15 @@ Value& VM::top() {
     return stack_.back();
 }
 
+// Metinler yalnizca + (birlestirme), == ve != ile kullanilabilir;
+// diger islemlerde metnin sayisal karsiligi yoktur ("a" * 2 sessizce 0 olurdu).
+static void sayiGerekli(const Value& a, const Value& b, const char* op) {
+    if (a.type == Value::Type::STRING || b.type == Value::Type::STRING) {
+        throw std::runtime_error(std::string("VM Hatasi: '") + op +
+            "' islemi metinlerle kullanilamaz (yalnizca +, == ve != kullanilabilir)");
+    }
+}
+
 // ============================================================
 // Ana Execution Loop
 //
@@ -99,6 +108,12 @@ void VM::execute(const CompiledProgram& program) {
             // ============================================================
             case Opcode::STORE: {
                 Value val = pop();
+                if (instr.intValue == 1 && variables_.find(instr.strValue) == variables_.end()) {
+                    // Yazim hatasi (toplma = toplam + 1) sessizce yeni degisken olusturmasin
+                    throw std::runtime_error("VM Hatasi: Tanimlanmamis degiskene atama '" +
+                        instr.strValue + "' (once 'degisken " + instr.strValue +
+                        " = ...' ile tanimlayin)");
+                }
                 variables_[instr.strValue] = std::move(val);
                 ip++;
                 break;
@@ -124,6 +139,7 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::SUB: {
                 Value b = pop();
                 Value a = pop();
+                sayiGerekli(a, b, "-");
                 push(Value(a.numValue - b.numValue));
                 ip++;
                 break;
@@ -132,6 +148,7 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::MUL: {
                 Value b = pop();
                 Value a = pop();
+                sayiGerekli(a, b, "*");
                 push(Value(a.numValue * b.numValue));
                 ip++;
                 break;
@@ -140,6 +157,7 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::DIV: {
                 Value b = pop();
                 Value a = pop();
+                sayiGerekli(a, b, "/");
                 if (b.numValue == 0.0) {
                     throw std::runtime_error("VM Hatasi: Sifira bolme");
                 }
@@ -155,6 +173,7 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::CMP_LT: {
                 Value b = pop();
                 Value a = pop();
+                sayiGerekli(a, b, "<");
                 push(Value(a.numValue < b.numValue ? 1.0 : 0.0));
                 ip++;
                 break;
@@ -163,6 +182,7 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::CMP_GT: {
                 Value b = pop();
                 Value a = pop();
+                sayiGerekli(a, b, ">");
                 push(Value(a.numValue > b.numValue ? 1.0 : 0.0));
                 ip++;
                 break;
@@ -171,7 +191,9 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::CMP_EQ: {
                 Value b = pop();
                 Value a = pop();
-                if (a.type == Value::Type::STRING && b.type == Value::Type::STRING) {
+                if (a.type != b.type) {
+                    push(Value(0.0));  // sayi ile metin hicbir zaman esit degil (0 == "a" yanlis)
+                } else if (a.type == Value::Type::STRING) {
                     push(Value(a.strValue == b.strValue ? 1.0 : 0.0));
                 } else {
                     push(Value(a.numValue == b.numValue ? 1.0 : 0.0));
@@ -183,7 +205,9 @@ void VM::execute(const CompiledProgram& program) {
             case Opcode::CMP_NEQ: {
                 Value b = pop();
                 Value a = pop();
-                if (a.type == Value::Type::STRING && b.type == Value::Type::STRING) {
+                if (a.type != b.type) {
+                    push(Value(1.0));
+                } else if (a.type == Value::Type::STRING) {
                     push(Value(a.strValue != b.strValue ? 1.0 : 0.0));
                 } else {
                     push(Value(a.numValue != b.numValue ? 1.0 : 0.0));

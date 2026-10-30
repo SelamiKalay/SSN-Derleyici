@@ -34,7 +34,8 @@ enum class Opcode : uint8_t {
 struct Instruction {
     Opcode opcode;
     double numValue = 0.0;      // PUSH icin sayi degeri
-    int intValue = 0;           // PUSH_STR, JUMP, JUMP_IF_FALSE icin index/adres
+    int intValue = 0;           // PUSH_STR, JUMP, JUMP_IF_FALSE icin index/adres;
+                                // STORE'da 1 = atama (degisken tanimli olmali)
     std::string strValue;       // LOAD, STORE icin degisken adi
 
     // Basit olusturucular

@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "lexer.h"
 
 // ============================================================
@@ -9,7 +10,8 @@
 // ============================================================
 struct ASTNode {
     virtual ~ASTNode() = default;
-    int line = 0; // Hata ayiklama icin satir bilgisi
+    int line = 0;  // Hata ayiklama icin satir bilgisi
+    int depth = 1; // Ifade agacinin derinligi (parser sinir koyar)
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -45,7 +47,10 @@ struct BinaryOpNode : ASTNode {
     ASTNodePtr left;
     ASTNodePtr right;
     BinaryOpNode(const std::string& o, ASTNodePtr l, ASTNodePtr r, int ln = 0)
-        : op(o), left(std::move(l)), right(std::move(r)) { line = ln; }
+        : op(o), left(std::move(l)), right(std::move(r)) {
+        line = ln;
+        depth = 1 + std::max(left->depth, right->depth);
+    }
 };
 
 // ============================================================

@@ -1,0 +1,3 @@
+// Tanimlanmamis degiskene atama: yazim hatasi sessizce yeni degisken olusturmamali
+degisken toplam = 0 ;
+toplma = toplam + 1 ;

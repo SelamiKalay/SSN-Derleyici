@@ -1,0 +1,2 @@
+degisken s = 0 ;
+yaz 10 / !s * 5! ;

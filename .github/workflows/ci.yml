@@ -17,3 +17,12 @@ jobs:
 
       - name: Testler — ssn
         run: bash tests/run_tests.sh build/ssn
+
+      # Bellek hatalari ve tanimsiz davranis (ör. double -> int tasmasi)
+      # testlerde sessizce gecmesin diye ayrica sanitizer'li derleme
+      - name: Testler — AddressSanitizer + UBSan
+        run: |
+          cmake -B build-san -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined,float-cast-overflow -fno-sanitize-recover=all -g"
+          cmake --build build-san
+          bash tests/run_tests.sh build-san/ssn

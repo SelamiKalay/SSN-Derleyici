@@ -1,0 +1,2 @@
+// Eskiden yaniltici "Sifira bolme" hatasi veriyordu
+yaz "a" / "b" ;

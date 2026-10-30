@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <variant>
+#include <cmath>
 
 // ============================================================
 // VM Value — Stack degeri (sayi veya string)
@@ -22,9 +23,12 @@ struct Value {
     // Debug icin string donusumu
     std::string toString() const {
         if (type == Type::STRING) return strValue;
-        // Tam sayi ise nokta gosterme
-        if (numValue == static_cast<int>(numValue)) {
-            return std::to_string(static_cast<int>(numValue));
+        // Tam sayi ise nokta gosterme. int'e donusturmek, int'e sigmayan
+        // degerlerde (ör. 12345678901) tanimsiz davranisti; long long ve
+        // 2^53 siniri (double'in tam sayilari kesin tuttugu aralik) kullanilir.
+        if (std::isfinite(numValue) && std::fabs(numValue) < 9007199254740992.0 &&
+            numValue == std::trunc(numValue)) {
+            return std::to_string(static_cast<long long>(numValue));
         }
         return std::to_string(numValue);
     }

@@ -14,6 +14,14 @@ public:
 private:
     std::vector<Token> tokens_;
     size_t pos_;
+    int nesting_ = 0;  // ic ice blok ve !...! sayisi
+
+    // Derleyici, AST'yi ozyinelemeli dolasir; sinirsiz derinlik yigini
+    // tasirip programi cokertirdi. Bu sinirlar gercek programlarin cok ustunde.
+    static constexpr int MAX_NESTING = 200;
+    static constexpr int MAX_DEPTH   = 1000;
+    void enterNesting(int line);
+    ASTNodePtr makeBinary(const std::string& op, ASTNodePtr l, ASTNodePtr r, int line);
 
     // Token yonetimi
     const Token& current() const;

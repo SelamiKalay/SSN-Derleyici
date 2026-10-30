@@ -63,7 +63,7 @@ struct Token {
         : type(t), value(v), line(l) {}
 
     Token(TokenType t, const std::string& v, int l, const std::vector<StringPart>& parts)
-        : type(t), value(v), line(l), stringParts(parts) {}
+        : type(t), value(v), stringParts(parts), line(l) {}
 };
 
 // ============================================================

@@ -143,7 +143,9 @@ void Compiler::compileVarDecl(VarDeclNode* node) {
 // ============================================================
 void Compiler::compileAssign(AssignNode* node) {
     compileExpression(node->expr.get());
-    emit(Instruction(Opcode::STORE, node->name));
+    Instruction store(Opcode::STORE, node->name);
+    store.intValue = 1;  // atama: degisken onceden tanimlanmis olmali
+    emit(store);
 }
 
 // ============================================================
